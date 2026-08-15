@@ -1,6 +1,6 @@
 import type { Destination } from "./destinations";
 
-const image = "/manus-storage/india-travel_ce603639.jpg";
+const image = "/images/india.jpg";
 
 type Seed = Omit<Destination, "image">;
 

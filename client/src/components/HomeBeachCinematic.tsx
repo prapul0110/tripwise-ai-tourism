@@ -4,7 +4,7 @@ const glints = Array.from({ length: 10 }, (_, index) => index);
 export function HomeBeachCinematic() {
   return (
     <div className="home-beach-cinematic" aria-hidden="true">
-      <img src="/manus-storage/tripwise-home-beach-activity_99446707.jpg" alt="" />
+      <img src="/images/home-beach.jpg" alt="" />
       <span className="beach-cinematic-shade" />
       <span className="beach-sun-haze" />
       <span className="beach-palm beach-palm-left"><i /><i /><i /></span>

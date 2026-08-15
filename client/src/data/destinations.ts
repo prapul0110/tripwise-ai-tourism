@@ -24,12 +24,11 @@ export type Destination = {
 };
 
 const images = {
-  goa: "/manus-storage/goa_fe9ecd20.jpg",
-  hyderabad: "/manus-storage/hyderabad_e5078257.jpg",
-  kerala: "/manus-storage/kerala_7a0d3eec.jpg",
-  india: "/manus-storage/india-travel_ce603639.jpg",
+  goa: "/images/goa.jpg",
+  hyderabad: "/images/hyderabad.jpg",
+  kerala: "/images/kerala.jpg",
+  india: "/images/india.jpg",
 };
-
 export const destinations: Destination[] = [
   {
     id: "goa", name: "Goa", state: "Goa", region: "West", category: "Coast", image: images.goa,

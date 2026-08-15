@@ -334,8 +334,35 @@ html, body { background: #020704; } body { color: #eaffeb; } button:focus-visibl
 .hero-section, .planner-page, .explore-page, .trip-page, .trips-page, .pricing-page, .profile-page, .destination-detail-page { background-image: linear-gradient(145deg, rgba(1, 10, 4, .60), rgba(2, 25, 10, .55) 54%, rgba(1, 9, 4, .72)) !important; }.section-dark, .destination-section, .final-cta { background-image: linear-gradient(135deg, rgba(1, 8, 3, .66), rgba(3, 24, 10, .56)) !important; }.nature-ridge-far { opacity: .74; }.nature-ridge-near { opacity: .96; }.nature-forest-far { opacity: .74; }.nature-forest-near { opacity: .98; }.nature-mist { opacity: .30; }.nature-aurora { opacity: .78; }
 
 /* Generated scenery gives the fixed dashboard background a natural, cinematic base; CSS layers above provide continuous animation. */
-.app-shell { background: transparent !important; }.nature-backdrop { background-image: linear-gradient(180deg, rgba(1, 8, 3, .72), rgba(1, 13, 5, .55) 46%, rgba(1, 7, 3, .82)), url("/manus-storage/kerala_7a0d3eec.jpg"); background-position: center; background-size: cover; }.hero-section::before { background: linear-gradient(90deg, rgba(0, 9, 3, .76) 3%, rgba(1, 16, 6, .48) 48%, rgba(1, 12, 5, .22)) !important; }.final-cta .three-background { mix-blend-mode: screen; }
+.app-shell {
+  background: transparent !important;
+}
 
+.nature-backdrop {
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(1, 8, 3, .72),
+      rgba(1, 13, 5, .55) 46%,
+      rgba(1, 7, 3, .82)
+    ),
+    url("/images/kerala.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-section::before {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 9, 3, .76) 3%,
+    rgba(1, 16, 6, .48) 48%,
+    rgba(1, 12, 5, .22)
+  ) !important;
+}
+
+.final-cta .three-background {
+  mix-blend-mode: screen;
+}
 /* Home is intentionally a separate beach film set: its footage takes priority over the app-wide forest scenery. */
 .home-page .hero-section { background-image: linear-gradient(112deg, rgba(2, 20, 12, .2), rgba(3, 30, 18, .06) 55%, rgba(3, 29, 16, 0)) !important; background-color: transparent !important; }
 .home-page .hero-section::before { background: linear-gradient(90deg, rgba(3, 20, 12, .45) 3%, rgba(4, 27, 16, .15) 43%, transparent 86%) !important; }
