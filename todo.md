@@ -1,0 +1,73 @@
+# Project TODO
+
+- [x] Establish the dark navy-and-teal visual system with elegant serif and sans-serif typography, responsive layouts, and reduced-motion support.
+- [x] Build the public landing page with cinematic hero, feature highlights, popular destinations, conversion calls to action, and a floating-globe 3D background.
+- [x] Add Manus OAuth sign-in, sign-out, auth-aware navigation, and protected routes for saved-trip and trip-detail experiences.
+- [x] Define persistent data models and server procedures for user travel preferences, saved trips, itineraries, budget line items, and subscription selection.
+- [x] Build the AI trip planner form with destination, date range, duration, traveler count, budget range, and travel-style inputs.
+- [x] Integrate a structured LLM itinerary workflow that produces a day-by-day plan from trip inputs and handles loading and error states.
+- [x] Build the authenticated saved-trips dashboard with responsive trip cards, summaries, management actions, and deletion confirmation.
+- [x] Build a destination explorer with region and category filters, destination cards, destination detail views, point-of-interest information, and a terrain-mesh 3D background.
+- [x] Add interactive Google Maps to trip-detail and explorer experiences with markers, nearby points of interest, itinerary waypoints, and direction links.
+- [x] Add an interactive trip budget tracker with accommodation, food, transport, activities, and total estimated cost calculations.
+- [x] Build trip-detail pages with itinerary timeline, budget summary, map, nearby recommendations, and a way to revise or delete saved trips.
+- [x] Build a subscription and pricing page with Free and Pro tiers plus a selected-plan state and payment-flow architecture messaging.
+- [x] Implement a distinct particle-cloud Three.js background for the trip-planner page and ensure all three visual scenes do not obscure content.
+- [x] Add and run Vitest coverage for budget calculation and itinerary/trip data transformations.
+- [x] Verify browser functionality, responsive layouts, 3D performance, keyboard accessibility, and motion preferences.
+- [x] Add an explicit authentication gate for saved trip detail routes and verify clear sign-out controls in navigation.
+- [x] Persist traveller preferences and per-trip budget line items, then bind the profile and trip UI to those procedures.
+- [x] Add a confirmation dialog for all destructive saved-trip actions, including trip detail deletion.
+- [x] Add individual destination detail routes and link explorer cards to their focused destination views.
+- [x] Supply generated itinerary stops as mapped waypoints on the trip-detail map.
+- [x] Perform focused keyboard and reduced-motion checks after the final interaction refinements.
+- [x] Replace the indefinite trip-detail loading state with a clear not-found or retrieval-error state.
+- [x] Resolve Google Maps load failures so map containers degrade gracefully and directions remain available.
+- [x] Verify keyboard focus order and dialog controls for auth, preferences, deletion, and destination-detail interactions.
+- [x] Verify reduced-motion behavior for navigation, dialog, destination-detail, and background-scene refinements.
+- [x] Reproduce the map-load fallback and confirm the directions escape route remains present.
+- [x] Inspect clean runtime logs to confirm there are no active schema-import or map-loader failures.
+- [x] Run an automated keyboard-navigation audit across public navigation, destination planning, profile preferences, and deletion confirmation controls.
+- [x] Run an automated reduced-motion audit confirming final background and interaction transitions are suppressed.
+- [x] Capture automated evidence that the map-fallback directions link is rendered when the proxy script is unavailable.
+- [x] Clarify the sandbox-only map warning in the delivery notes after validating the proxy with the deployed preview origin.
+- [x] Extend automated keyboard verification to planner fields, profile preferences, and the deletion confirmation dialog.
+- [x] Extend automated reduced-motion verification across navigation, destination details, profile controls, and deletion-dialog interactions.
+- [x] Add a focused rendered-dialog regression test covering the deletion confirmation’s labelled cancel and confirm controls.
+- [x] Audit the current TripWise color and motion tokens to preserve functional contrast while shifting the visual system to a clearer green-and-black direction.
+- [x] Add layered, page-wide animated ambient backgrounds that complement each page’s existing Three.js scene without impairing content readability.
+- [x] Apply the green-and-black palette consistently to navigation, cards, forms, dialogs, maps, and page sections.
+- [x] Verify the refined animated backgrounds on desktop and mobile, including reduced-motion behavior.
+- [x] Run and document an emulated reduced-motion audit of the updated green-and-black landing, planner, and explorer backgrounds.
+- [x] Assess the existing global animated-background layers and define the nature-scenery composition for dashboard-wide use.
+- [x] Add an animated full-application nature scenery layer with forest silhouettes, atmospheric haze, and drifting light that stays behind interactive UI.
+- [x] Strengthen dashboard and card surface contrast so forms, maps, navigation, and data remain legible over the scenery.
+- [x] Verify the animated nature background on desktop and mobile and confirm reduced-motion behavior.
+- [x] Increase the visible presence of the forest ridge and atmospheric scenery across longer dashboard pages while preserving content contrast.
+- [x] Extend the automated reduced-motion audit to inspect the global nature backdrop, forest layers, mist, aurora, and fireflies.
+- [x] Diagnose the reported AI Planner itinerary-generation failure using the planner UI, itinerary procedure, and current runtime logs.
+- [x] Repair the itinerary-generation submission flow and make its success, loading, and error states reliable.
+- [x] Add focused regression coverage for the repaired planner submission path and verify a generated itinerary renders successfully.
+- [x] Extend the authenticated planner browser regression to assert rendered itinerary day and stop content after submission, not only route navigation.
+- [x] Capture the planner generation response in the browser audit and verify it contains a valid non-empty structured itinerary payload.
+- [x] Add a retry-and-recovery path for incomplete model JSON or empty model content, with focused regression coverage for those response variations.
+- [x] Add a focused empty-content parser regression for itinerary model responses.
+- [x] Extract and test the recoverable-response decision so malformed and unreadable model content reliably trigger the bounded retry path.
+- [x] Define an accessible, performant home-page beach scene featuring shoreline activity without obscuring the hero content.
+- [x] Create and integrate a tasteful beach-and-people activity visual into the home-page background.
+- [x] Expand the destination explorer with a comprehensive, clearly sourced catalogue of major travel destinations across every Indian state and union territory.
+- [x] Add explorer filters and search behavior that remain usable with the expanded India catalogue.
+- [x] Add subtle, optional selection sounds for navigation and interactive option controls, with user controls and reduced-motion/audio safeguards.
+- [x] Validate the new beach scene, full India catalogue, and interaction audio on desktop and mobile.
+- [x] Add regression coverage confirming the destination catalogue represents all states and union territories.
+- [x] Add regression coverage for enabling and disabling the interaction-sound preference.
+- [x] Verify region and category filters against the expanded India catalogue and add focused regression coverage for their results.
+- [x] Add browser-level instrumentation proving selection sounds fire on supported navigation or option interactions and remain muted after opt-out.
+- [x] Verify the sound preference control and selection-sound behavior on desktop and mobile, including keyboard activation.
+- [x] Add mobile browser instrumentation proving selection sounds fire on a supported interaction and remain muted after mobile opt-out.
+- [x] Assess the current home background layers and define a full-page beach-cinematic treatment for the “Travel farther. Think deeper.” experience.
+- [x] Extend the home beach scenery across the entire scrollable page with lively, lightweight wave, sun-glint, palm, and beach-activity motion.
+- [x] Retune hero and lower-page overlays to keep every text, card, and action legible over the animated beach setting.
+- [x] Verify the full-home beach experience on desktop and mobile, including a non-animated reduced-motion alternative.
+- [x] Review and document the current desktop and 375px home captures, explicitly confirming beach visibility behind the hero, middle sections, CTA, and footer while text and cards remain legible.
+- [x] Add a focused browser check that asserts the beach cinematic and its content-safe layering are present at desktop and mobile breakpoints.

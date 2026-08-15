@@ -1,0 +1,23 @@
+{
+  "baseUrl": "https://3000-il39stmgdbt20qgvrc9x3-21b76c98.us3.manus.computer",
+  "explorer": {
+    "initialGatewayCount": "36 gateways",
+    "searchGatewayCount": "1 gateways",
+    "matchVisible": true,
+    "southGatewayCount": "7 gateways",
+    "southCoastGatewayCount": "4 gateways"
+  },
+  "sound": {
+    "initiallyEnabled": "true",
+    "selectionEventsWhenEnabled": 3,
+    "afterOptOut": "off",
+    "selectionEventsAfterOptOut": 3,
+    "afterOptIn": "on"
+  },
+  "mobile": {
+    "selectionEventsWhenEnabled": 1,
+    "soundToggleAfterKeyboard": "false",
+    "selectionEventsAfterOptOut": 1,
+    "soundToggleAfterSecondKeyboard": "true"
+  }
+}
