@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1786726520352,
+      "tag": "0000_productive_ultimatum",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1786726841207,
+      "tag": "0001_colossal_tattoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1786727300686,
+      "tag": "0002_watery_serpent_society",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "baseUrl": "https://3000-il39stmgdbt20qgvrc9x3-21b76c98.us3.manus.computer",
+  "captures": [
+    {
+      "breakpoint": "desktop",
+      "section": "hero",
+      "path": "artifacts/home-cinematic/desktop-hero.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(112deg, rgba(2, 20, 12, 0.2), rgba(3, 30, 18, 0.06) 55%, rgba(3, 29, 16, 0))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "desktop",
+      "section": "method",
+      "path": "artifacts/home-cinematic/desktop-method.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(90deg, rgba(3, 20, 12, 0.5), rgba(5, 31, 18, 0.29))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "desktop",
+      "section": "destinations",
+      "path": "artifacts/home-cinematic/desktop-destinations.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(90deg, rgba(3, 21, 12, 0.52), rgba(6, 36, 21, 0.25))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "desktop",
+      "section": "cta",
+      "path": "artifacts/home-cinematic/desktop-cta.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(90deg, rgba(2, 19, 11, 0.5), rgba(3, 28, 16, 0.18))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "desktop",
+      "section": "footer",
+      "path": "artifacts/home-cinematic/desktop-footer.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "mobile",
+      "section": "hero",
+      "path": "artifacts/home-cinematic/mobile-hero.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(112deg, rgba(2, 20, 12, 0.2), rgba(3, 30, 18, 0.06) 55%, rgba(3, 29, 16, 0))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "mobile",
+      "section": "method",
+      "path": "artifacts/home-cinematic/mobile-method.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(90deg, rgba(3, 20, 12, 0.5), rgba(5, 31, 18, 0.29))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "mobile",
+      "section": "destinations",
+      "path": "artifacts/home-cinematic/mobile-destinations.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(90deg, rgba(3, 21, 12, 0.52), rgba(6, 36, 21, 0.25))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "mobile",
+      "section": "cta",
+      "path": "artifacts/home-cinematic/mobile-cta.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "auto",
+          "backgroundImage": "linear-gradient(90deg, rgba(2, 19, 11, 0.5), rgba(3, 28, 16, 0.18))",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    },
+    {
+      "breakpoint": "mobile",
+      "section": "footer",
+      "path": "artifacts/home-cinematic/mobile-footer.png",
+      "layers": {
+        "section": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "beach": {
+          "found": true,
+          "zIndex": "1",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "main": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        },
+        "footer": {
+          "found": true,
+          "zIndex": "2",
+          "backgroundImage": "none",
+          "color": "rgb(234, 255, 235)"
+        }
+      }
+    }
+  ]
+}

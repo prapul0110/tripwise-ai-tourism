@@ -1,0 +1,655 @@
+{
+  "baseUrl": "https://3000-il39stmgdbt20qgvrc9x3-21b76c98.us3.manus.computer",
+  "keyboard": {
+    "landing": [
+      {
+        "tag": "A",
+        "text": "TripWise",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Home",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Explore",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "AI Planner",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "My Trips",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Pricing",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "ariaLabel": "Turn selection sounds off",
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Sign in",
+        "ariaLabel": null,
+        "outline": "rgb(234, 255, 235) solid 3px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Get started",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Build your journey",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      }
+    ],
+    "planner": [
+      {
+        "tag": "A",
+        "text": "TripWise",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Home",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Explore",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "AI Planner",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "My Trips",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Pricing",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "ariaLabel": "Turn selection sounds off",
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Sign in",
+        "ariaLabel": null,
+        "outline": "rgb(234, 255, 235) solid 3px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Get started",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "SELECT",
+        "text": "GoaHyderabadKeralaJaipurManaliMumbaiDelhiBengaluruChennaiAgraVisakhapatnamTawang",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(234, 255, 235) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) none 3px"
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "ariaLabel": null,
+        "outline": "rgb(234, 255, 235) none 3px"
+      }
+    ],
+    "profile": [
+      {
+        "tag": "A",
+        "text": "TripWise",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Home",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Explore",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "AI Planner",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "My Trips",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Pricing",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "ariaLabel": "Turn selection sounds off",
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Sign in",
+        "ariaLabel": null,
+        "outline": "rgb(234, 255, 235) solid 3px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Get started",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Sign in with Manus",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BODY",
+        "text": "window.__MANUS_HOST_DEV__ = true; (function(){\"use strict\";var Mr={exports:{}},K",
+        "ariaLabel": null,
+        "outline": "rgb(234, 255, 235) none 3px"
+      },
+      {
+        "tag": "A",
+        "text": "TripWise",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Home",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Explore",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "AI Planner",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "My Trips",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "A",
+        "text": "Pricing",
+        "ariaLabel": null,
+        "outline": "rgb(140, 255, 148) solid 2px"
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "ariaLabel": "Turn selection sounds off",
+        "outline": "rgb(140, 255, 148) solid 2px"
+      }
+    ]
+  },
+  "reducedMotion": {
+    "navigation": {
+      "mediaMatches": true,
+      "styles": [
+        {
+          "selector": ".top-nav a",
+          "found": false,
+          "transitionDuration": null,
+          "animationDuration": null
+        },
+        {
+          "selector": ".button-teal",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".three-background canvas",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-backdrop",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-ridge-near",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-fireflies span",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".home-beach-cinematic > img",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "0s"
+        },
+        {
+          "selector": ".beach-sun-haze",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "0s"
+        },
+        {
+          "selector": ".beach-surf",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "0s"
+        },
+        {
+          "selector": ".beach-glints i",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "0s"
+        },
+        {
+          "selector": ".beach-palm",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "0s"
+        }
+      ]
+    },
+    "planner": {
+      "mediaMatches": true,
+      "styles": [
+        {
+          "selector": ".planner-card",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".button-teal",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".three-background canvas",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-backdrop",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-mist",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-aurora",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        }
+      ]
+    },
+    "explorer": {
+      "mediaMatches": true,
+      "styles": [
+        {
+          "selector": ".explore-filters",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".explore-card",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".three-background canvas",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-backdrop",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-forest-near",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".nature-fireflies span",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        }
+      ]
+    },
+    "destinationDetail": {
+      "mediaMatches": true,
+      "styles": [
+        {
+          "selector": ".explore-detail-link",
+          "found": false,
+          "transitionDuration": null,
+          "animationDuration": null
+        },
+        {
+          "selector": ".button-teal",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".three-background canvas",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        }
+      ]
+    },
+    "profile": {
+      "mediaMatches": true,
+      "styles": [
+        {
+          "selector": ".preference-editor button",
+          "found": false,
+          "transitionDuration": null,
+          "animationDuration": null
+        },
+        {
+          "selector": ".button-teal",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "selector": ".three-background canvas",
+          "found": true,
+          "transitionDuration": "1e-05s",
+          "animationDuration": "1e-05s"
+        }
+      ]
+    }
+  },
+  "homeCinematic": {
+    "desktop": {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "beachLayer": {
+        "found": true,
+        "zIndex": "1",
+        "position": "fixed",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "beachImage": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "absolute",
+        "backgroundImage": "none",
+        "opacity": "0.98",
+        "coversViewport": true
+      },
+      "nav": {
+        "found": true,
+        "zIndex": "3",
+        "position": "relative",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "main": {
+        "found": true,
+        "zIndex": "2",
+        "position": "relative",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "heroCopy": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "static",
+        "backgroundImage": "radial-gradient(at 24% 48%, rgba(1, 17, 8, 0.55), rgba(1, 17, 8, 0) 72%)",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "methodSection": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "relative",
+        "backgroundImage": "linear-gradient(90deg, rgba(3, 20, 12, 0.5), rgba(5, 31, 18, 0.29))",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "destinationSection": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "relative",
+        "backgroundImage": "linear-gradient(90deg, rgba(3, 21, 12, 0.52), rgba(6, 36, 21, 0.25))",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "finalCta": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "relative",
+        "backgroundImage": "linear-gradient(90deg, rgba(2, 19, 11, 0.5), rgba(3, 28, 16, 0.18))",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "footer": {
+        "found": true,
+        "zIndex": "2",
+        "position": "relative",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": false
+      }
+    },
+    "mobile": {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "beachLayer": {
+        "found": true,
+        "zIndex": "1",
+        "position": "fixed",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "beachImage": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "absolute",
+        "backgroundImage": "none",
+        "opacity": "0.72",
+        "coversViewport": true
+      },
+      "nav": {
+        "found": true,
+        "zIndex": "3",
+        "position": "relative",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "main": {
+        "found": true,
+        "zIndex": "2",
+        "position": "relative",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "heroCopy": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "static",
+        "backgroundImage": "radial-gradient(at 24% 48%, rgba(1, 17, 8, 0.55), rgba(1, 17, 8, 0) 72%)",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "methodSection": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "relative",
+        "backgroundImage": "linear-gradient(90deg, rgba(3, 20, 12, 0.5), rgba(5, 31, 18, 0.29))",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "destinationSection": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "relative",
+        "backgroundImage": "linear-gradient(90deg, rgba(3, 21, 12, 0.52), rgba(6, 36, 21, 0.25))",
+        "opacity": "1",
+        "coversViewport": true
+      },
+      "finalCta": {
+        "found": true,
+        "zIndex": "auto",
+        "position": "relative",
+        "backgroundImage": "linear-gradient(90deg, rgba(2, 19, 11, 0.5), rgba(3, 28, 16, 0.18))",
+        "opacity": "1",
+        "coversViewport": false
+      },
+      "footer": {
+        "found": true,
+        "zIndex": "2",
+        "position": "relative",
+        "backgroundImage": "none",
+        "opacity": "1",
+        "coversViewport": false
+      }
+    }
+  },
+  "mapFallback": {
+    "visible": false,
+    "linkText": null,
+    "linkHref": null
+  },
+  "deleteDialog": {
+    "rendered": false,
+    "reason": "No saved trip is available in this user session."
+  }
+}
