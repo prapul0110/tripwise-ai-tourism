@@ -1,19 +1,64 @@
-import { Check, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
-import { toast } from "sonner";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { startLogin } from "@/const";
+import { Link } from "wouter";
+import { ArrowRight, Check, Compass, Sparkles } from "lucide-react";
 import { TripNav } from "@/components/TripNav";
-import { ThreeBackground } from "@/components/ThreeBackground";
-import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 
-const plans = [{ name: "Free", price: "₹0", description: "A deliberate way to begin planning.", features: ["5 AI itinerary generations", "Essential route and budget view", "3 saved journeys"], id: "free" as const }, { name: "Pro", price: "₹299", description: "For a travel practice with more range.", features: ["Unlimited AI itinerary generation", "Advanced budget optimisation", "Unlimited saved journeys", "Priority TripWise assistant"], id: "pro" as const }];
-
 export default function Pricing() {
-  const { isAuthenticated } = useAuth();
-  const utils = trpc.useUtils();
-  const current = trpc.subscription.current.useQuery(undefined, { enabled: isAuthenticated });
-  const choose = trpc.subscription.selectDemoPlan.useMutation({ onSuccess: () => { void utils.subscription.current.invalidate(); toast.success("Your selected demo plan is now active."); } });
-  const select = (plan: "free" | "pro") => { if (!isAuthenticated) { toast.info("Sign in before choosing a plan."); startLogin(); return; } choose.mutate({ plan }); };
-  return <div className="app-shell pricing-page page-with-scene"><TripNav /><ThreeBackground scene="orbit" /><main className="page-main container"><div className="pricing-intro"><p className="eyebrow"><Sparkles size={14} /> Designed to grow with you</p><h1>Choose your<br /><em>way of going.</em></h1><p>Start with the essential TripWise planning space or unlock more room for every route.</p></div><div className="pricing-grid">{plans.map(plan => <section className={`price-card glass-card ${plan.id === "pro" ? "featured" : ""}`} key={plan.id}>{plan.id === "pro" && <span className="featured-label">MOST CONSIDERED</span>}<p className="eyebrow">TripWise {plan.name}</p><h2>{plan.price}<small>/ month</small></h2><p>{plan.description}</p><div className="price-rule" /> <ul>{plan.features.map(feature => <li key={feature}><Check size={16} /> {feature}</li>)}</ul><Button className={plan.id === "pro" ? "button-teal" : "button-outline"} variant={plan.id === "pro" ? "default" : "outline"} onClick={() => select(plan.id)} disabled={choose.isPending || current.data?.plan === plan.id}>{current.data?.plan === plan.id ? "Current plan" : plan.id === "pro" ? "Choose Pro" : "Choose Free"}</Button></section>)}</div><section className="demo-payment glass-card"><div><CreditCard size={20} /><div><p className="eyebrow">Payment architecture</p><h3>Demo payment mode is enabled</h3><p>This preview records a selected demo plan only. Production checkout remains deliberately disconnected until a secure provider such as Razorpay is configured with server-side credentials.</p></div></div><span><ShieldCheck size={15} /> No payment details are collected</span></section></main></div>;
+  const features = [
+    "Unlimited AI itinerary generation",
+    "Detailed daily schedules with transit estimates",
+    "Curated attractions & authentic culinary spots",
+    "Full itinerary editing, reordering & removal",
+    "Interactive spatial field map with directions",
+    "Accommodation planning & dynamic budget calculations",
+    "Save and revisit unlimited journeys in your personal library",
+  ];
+
+  return (
+    <div className="app-shell pricing-page">
+      <TripNav />
+      <main className="page-main container">
+        <div className="pricing-intro" style={{ maxWidth: "760px", margin: "0 auto 40px", textAlign: "center" }}>
+          <p className="eyebrow" style={{ justifyContent: "center" }}>
+            <Sparkles size={14} /> 100% Free & Open
+          </p>
+          <h1>
+            TripWise AI is <em>100% free.</em>
+          </h1>
+          <p style={{ maxWidth: "620px", margin: "0 auto" }}>
+            Every traveler gets full access to all features. No subscriptions, no tiers, and no payment requirements.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: "760px", margin: "0 auto 36px" }}>
+          <section className="glass-card" style={{ padding: "36px 32px" }}>
+            <p className="eyebrow" style={{ marginBottom: "16px", color: "var(--teal-300, #5ee0d3)" }}>
+              <Compass size={15} /> All features unlocked for everyone
+            </p>
+            <ul style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "14px", margin: "0 0 28px", padding: 0, listStyle: "none" }}>
+              {features.map((feature) => (
+                <li key={feature} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#e2f1f0" }}>
+                  <Check size={16} style={{ color: "#5ee0d3", flexShrink: 0 }} />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", justifyContent: "center", paddingTop: "12px", borderTop: "1px solid rgba(111, 229, 218, 0.15)" }}>
+              <Link href="/planner">
+                <Button className="button-teal button-lg flex items-center gap-2">
+                  Start Planning <ArrowRight size={16} />
+                </Button>
+              </Link>
+              <Link href="/explore">
+                <Button variant="outline" className="button-outline button-lg">
+                  Explore Destinations
+                </Button>
+              </Link>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
 }

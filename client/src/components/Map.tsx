@@ -1,77 +1,5 @@
 /**
- * GOOGLE MAPS FRONTEND INTEGRATION - ESSENTIAL GUIDE
- *
- * USAGE FROM PARENT COMPONENT:
- * ======
- *
- * const mapRef = useRef<google.maps.Map | null>(null);
- *
- * <MapView
- *   initialCenter={{ lat: 40.7128, lng: -74.0060 }}
- *   initialZoom={15}
- *   onMapReady={(map) => {
- *     mapRef.current = map; // Store to control map from parent anytime, google map itself is in charge of the re-rendering, not react state.
- * </MapView>
- *
- * ======
- * Available Libraries and Core Features:
- * -------------------------------
- * 📍 MARKER (from `marker` library)
- * - Attaches to map using { map, position }
- * new google.maps.marker.AdvancedMarkerElement({
- *   map,
- *   position: { lat: 37.7749, lng: -122.4194 },
- *   title: "San Francisco",
- * });
- *
- * -------------------------------
- * 🏢 PLACES (from `places` library)
- * - Does not attach directly to map; use data with your map manually.
- * const place = new google.maps.places.Place({ id: PLACE_ID });
- * await place.fetchFields({ fields: ["displayName", "location"] });
- * map.setCenter(place.location);
- * new google.maps.marker.AdvancedMarkerElement({ map, position: place.location });
- *
- * -------------------------------
- * 🧭 GEOCODER (from `geocoding` library)
- * - Standalone service; manually apply results to map.
- * const geocoder = new google.maps.Geocoder();
- * geocoder.geocode({ address: "New York" }, (results, status) => {
- *   if (status === "OK" && results[0]) {
- *     map.setCenter(results[0].geometry.location);
- *     new google.maps.marker.AdvancedMarkerElement({
- *       map,
- *       position: results[0].geometry.location,
- *     });
- *   }
- * });
- *
- * -------------------------------
- * 📐 GEOMETRY (from `geometry` library)
- * - Pure utility functions; not attached to map.
- * const dist = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
- *
- * -------------------------------
- * 🛣️ ROUTES (from `routes` library)
- * - Combines DirectionsService (standalone) + DirectionsRenderer (map-attached)
- * const directionsService = new google.maps.DirectionsService();
- * const directionsRenderer = new google.maps.DirectionsRenderer({ map });
- * directionsService.route(
- *   { origin, destination, travelMode: "DRIVING" },
- *   (res, status) => status === "OK" && directionsRenderer.setDirections(res)
- * );
- *
- * -------------------------------
- * 🌦️ MAP LAYERS (attach directly to map)
- * - new google.maps.TrafficLayer().setMap(map);
- * - new google.maps.TransitLayer().setMap(map);
- * - new google.maps.BicyclingLayer().setMap(map);
- *
- * -------------------------------
- * ✅ SUMMARY
- * - “map-attached” → AdvancedMarkerElement, DirectionsRenderer, Layers.
- * - “standalone” → Geocoder, DirectionsService, DistanceMatrixService, ElevationService.
- * - “data-only” → Place, Geometry utilities.
+ * GOOGLE MAPS FRONTEND INTEGRATION - TRIPWISE AI
  */
 
 /// <reference types="@types/google.maps" />
@@ -86,20 +14,36 @@ declare global {
   }
 }
 
-const API_KEY = import.meta.env.VITE_FRONTEND_FORGE_API_KEY;
+const GOOGLE_MAPS_KEY =
+  import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
+  import.meta.env.VITE_FRONTEND_FORGE_API_KEY;
+
 const FORGE_BASE_URL =
   import.meta.env.VITE_FRONTEND_FORGE_API_URL ||
   "https://forge.butterfly-effect.dev";
-const MAPS_PROXY_URL = `${FORGE_BASE_URL}/v1/maps/proxy`;
+
+function getMapsScriptUrl(): string | null {
+  if (!GOOGLE_MAPS_KEY || GOOGLE_MAPS_KEY === "undefined" || GOOGLE_MAPS_KEY.trim() === "") {
+    return null;
+  }
+  if (import.meta.env.VITE_FRONTEND_FORGE_API_KEY && import.meta.env.VITE_FRONTEND_FORGE_API_URL) {
+    return `${FORGE_BASE_URL}/v1/maps/proxy/maps/api/js?key=${GOOGLE_MAPS_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
+  }
+  return `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
+}
 
 let mapScriptPromise: Promise<void> | null = null;
 
-function loadMapScript() {
-  if (window.google?.maps) return Promise.resolve();
+function loadMapScript(): Promise<void> {
+  if (typeof window !== "undefined" && window.google?.maps) return Promise.resolve();
+  const scriptUrl = getMapsScriptUrl();
+  if (!scriptUrl) {
+    return Promise.reject(new Error("No Google Maps API credentials configured."));
+  }
   if (mapScriptPromise) return mapScriptPromise;
   mapScriptPromise = new Promise<void>((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>('script[data-tripwise-maps="true"]');
-    const onLoad = () => window.google?.maps ? resolve() : reject(new Error("Google Maps loaded without the expected API."));
+    const onLoad = () => (window.google?.maps ? resolve() : reject(new Error("Google Maps loaded without the expected API.")));
     const onError = () => reject(new Error("Google Maps could not be loaded."));
     if (existing) {
       existing.addEventListener("load", onLoad, { once: true });
@@ -109,7 +53,7 @@ function loadMapScript() {
     const script = document.createElement("script");
     script.dataset.tripwiseMaps = "true";
     script.crossOrigin = "anonymous";
-    script.src = `${MAPS_PROXY_URL}/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
+    script.src = scriptUrl;
     script.async = true;
     script.onload = onLoad;
     script.onerror = onError;
@@ -131,8 +75,8 @@ interface MapViewProps {
 
 export function MapView({
   className,
-  initialCenter = { lat: 37.7749, lng: -122.4194 },
-  initialZoom = 12,
+  initialCenter = { lat: 15.4909, lng: 73.8278 },
+  initialZoom = 11,
   onMapReady,
   onMapError,
 }: MapViewProps) {
@@ -142,8 +86,14 @@ export function MapView({
 
   const init = usePersistFn(async () => {
     try {
+      if (typeof window === "undefined") return;
+      if (!window.google?.maps && !getMapsScriptUrl()) {
+        throw new Error("No Google Maps API key provided. Switching to spatial field map.");
+      }
       await loadMapScript();
-      if (!mapContainer.current || !window.google?.maps) throw new Error("Map container or API was unavailable.");
+      if (!mapContainer.current || !window.google?.maps) {
+        throw new Error("Map container or API was unavailable.");
+      }
       map.current = new window.google.maps.Map(mapContainer.current, {
         zoom: initialZoom,
         center: initialCenter,
@@ -154,7 +104,6 @@ export function MapView({
       });
       onMapReady?.(map.current);
     } catch (error) {
-      console.warn("TripWise map preview unavailable.", error);
       setFailed(true);
       onMapError?.();
     }
@@ -165,6 +114,10 @@ export function MapView({
   }, [init]);
 
   return (
-    <div ref={mapContainer} className={cn("w-full h-[500px]", className)} aria-label={failed ? "Map preview unavailable" : "Interactive map"} />
+    <div
+      ref={mapContainer}
+      className={cn("w-full h-[460px]", className)}
+      aria-label={failed ? "Map preview fallback active" : "Interactive map"}
+    />
   );
 }

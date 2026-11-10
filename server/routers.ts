@@ -1,11 +1,15 @@
 import { COOKIE_NAME } from "@shared/const";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import bcrypt from "bcryptjs";
+import { createSessionToken } from "./_core/authService";
 import { getSessionCookieOptions } from "./_core/cookies";
-import { invokeLLM, listLLMModels } from "./_core/llm";
+import { invokeLLM, listLLMModels, isAIConfigured } from "./_core/llm";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { createTripForUser, deleteTripForUser, getSubscriptionForUser, getTravelProfileForUser, getTripForUser, listTripsForUser, setSubscriptionForUser, setTravelProfileForUser } from "./db";
+import { createUserWithPassword, createTripForUser, deleteTripForUser, getSubscriptionForUser, getTravelProfileForUser, getTripForUser, getUserByEmail, listTripsForUser, setSubscriptionForUser, setTravelProfileForUser, updateLastSignedIn, updateTripForUser } from "./db";
+import { buildDestinationItinerary, areAttractionsDuplicate, sanitizeGeminiJsonResponse } from "./itineraryEngine";
+import { getDestination } from "../client/src/data/destinations";
 
 export const tripInput = z.object({
   destination: z.string().min(2).max(120),
@@ -18,20 +22,38 @@ export const tripInput = z.object({
   styles: z.array(z.string().min(2).max(40)).min(1).max(8),
 });
 
+export const transitInfoSchema = z.object({
+  distanceKm: z.number(),
+  durationMinutes: z.number(),
+  formattedDistance: z.string(),
+  formattedDuration: z.string(),
+  source: z.enum(["google_maps", "estimate"]),
+});
+
 export const itinerarySchema = z.object({
-  title: z.string().min(3).max(120),
-  summary: z.string().min(20).max(320),
+  title: z.string().min(3).max(180),
+  summary: z.string().min(10).max(1200),
   days: z.array(z.object({
     day: z.number().int().min(1).max(30),
-    theme: z.string().min(3).max(80),
+    theme: z.string().min(1).max(120),
+    totalDistanceKm: z.number().optional(),
+    totalTransitMinutes: z.number().optional(),
+    formattedDailyDistance: z.string().optional(),
+    formattedDailyTransit: z.string().optional(),
     stops: z.array(z.object({
-      time: z.string().min(2).max(80),
-      title: z.string().min(2).max(120),
-      location: z.string().min(2).max(120),
-      description: z.string().min(10).max(500),
-      duration: z.string().min(2).max(50),
-      estimatedCost: z.number().int().min(0).max(500000),
-    })).min(2).max(5),
+      id: z.string().optional(),
+      time: z.string().min(1).max(80),
+      title: z.string().min(1).max(180),
+      location: z.string().min(1).max(180),
+      description: z.string().min(0).max(1000).optional().default(""),
+      duration: z.string().min(1).max(80),
+      estimatedCost: z.number().int().min(0).max(500000).optional().default(0),
+      stopType: z.enum(["attraction", "food"]).optional(),
+      mealType: z.enum(["breakfast", "lunch", "dinner"]).optional(),
+      specialties: z.array(z.string()).optional(),
+      coords: z.object({ lat: z.number(), lng: z.number() }).optional(),
+      transitToNext: transitInfoSchema.optional(),
+    })).min(0).max(25),
   })).min(1).max(30),
 });
 
@@ -45,6 +67,27 @@ export const itinerarySkeletonSchema = z.object({
   })).min(1).max(30),
 });
 
+export const accommodationSelectionSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1).max(180),
+  destinationId: z.string().optional(),
+  type: z.string(),
+  address: z.string(),
+  coords: z.object({ lat: z.number(), lng: z.number() }),
+  checkIn: z.string(),
+  checkOut: z.string(),
+  nights: z.number().min(1),
+  roomType: z.string(),
+  roomCount: z.number().min(1),
+  guestCount: z.number().min(1),
+  pricePerNight: z.number().min(0),
+  totalCost: z.number().min(0),
+  amenities: z.array(z.string()).default([]),
+  bookingUrl: z.string().optional(),
+  source: z.enum(["catalogue", "custom", "verified"]).default("catalogue"),
+  isBreakfastIncluded: z.boolean().optional(),
+});
+
 const budgetBreakdownSchema = z.object({
   accommodation: z.number().int().min(0),
   food: z.number().int().min(0),
@@ -54,7 +97,7 @@ const budgetBreakdownSchema = z.object({
   dailyPerTraveler: z.number().int().min(0),
 });
 
-type TripInput = z.infer<typeof tripInput>;
+export type TripInput = z.infer<typeof tripInput>;
 
 let itineraryModelPromise: Promise<string | undefined> | undefined;
 
@@ -80,14 +123,7 @@ export async function withDeadline<T>(operation: Promise<T>, milliseconds: numbe
 }
 
 export function itineraryResponseText(content: unknown) {
-  const text = typeof content === "string"
-    ? content
-    : Array.isArray(content)
-      ? content.map(part => typeof part === "object" && part && "type" in part && part.type === "text" && "text" in part && typeof part.text === "string" ? part.text : "").join("")
-      : "";
-  const normalized = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-  if (!normalized) throw new Error("The itinerary model returned no readable content.");
-  return normalized;
+  return sanitizeGeminiJsonResponse(content);
 }
 
 export function parseItineraryPayload(input: TripInput, content: unknown) {
@@ -101,18 +137,35 @@ export function parseItineraryPayload(input: TripInput, content: unknown) {
 export function hydrateItinerarySkeleton(input: TripInput, skeleton: z.infer<typeof itinerarySkeletonSchema>) {
   if (skeleton.days.length !== input.days) throw new Error("The itinerary model returned an incomplete daily plan.");
   const styles = input.styles.map(style => style.toLowerCase());
+  const destination = getDestination(input.destination);
+  const dailyBudget = Math.max(100, Math.round(input.budgetAmount / input.days));
+  const usedItems: { id?: string; name: string }[] = [];
+
   return itinerarySchema.parse({
     title: skeleton.title,
     summary: skeleton.summary.length <= 320 ? skeleton.summary : `${skeleton.summary.slice(0, 319).trimEnd()}…`,
     days: skeleton.days.map((day, index) => {
-      const dailyBudget = Math.max(100, Math.round(input.budgetAmount / input.days));
       const primaryStyle = styles[index % styles.length] ?? "local discovery";
+
+      // Prefer unscheduled points from destination catalogue
+      const anchorPoint = (day.anchor && day.anchor.trim().length > 2
+        ? destination.points.find(p => p.name.toLowerCase().includes(day.anchor.toLowerCase()) && !usedItems.some(u => areAttractionsDuplicate(u, p)))
+        : null) || destination.points.find(p => !usedItems.some(u => areAttractionsDuplicate(u, p)));
+
+      const anchorTitle = anchorPoint?.name ?? (day.anchor && day.anchor.trim().length > 2 ? day.anchor.trim() : `${destination.name} Morning`);
+      if (anchorPoint) usedItems.push({ id: anchorPoint.id, name: anchorPoint.name });
+
+      const secondPoint = destination.points.find(p => !usedItems.some(u => areAttractionsDuplicate(u, p)));
+      const secondTitle = secondPoint?.name ?? `${destination.name} Heritage Quarter`;
+      if (secondPoint) usedItems.push({ id: secondPoint.id, name: secondPoint.name });
+      const secondDesc = secondPoint?.description || `A flexible local visit in ${destination.name} shaped around your ${primaryStyle} style.`;
+
       return {
         day: day.day,
         theme: day.theme,
         stops: [
-          { time: "09:00", title: `Explore ${day.anchor}`, location: input.destination, description: `A paced ${primaryStyle} visit centred on ${day.anchor}.`, duration: "2–3 hours", estimatedCost: Math.round(dailyBudget * .24) },
-          { time: "15:30", title: `${input.styles[(index + 1) % input.styles.length]} pause`, location: input.destination, description: "A flexible local experience that keeps the day comfortable and unhurried.", duration: "2 hours", estimatedCost: Math.round(dailyBudget * .18) },
+          { time: "09:30", title: anchorTitle, location: destination.name, description: `A paced ${primaryStyle} visit centred on ${anchorTitle}.`, duration: "2–3 hours", estimatedCost: Math.round(dailyBudget * .28) },
+          { time: "15:00", title: secondTitle, location: destination.name, description: secondDesc, duration: "2 hours", estimatedCost: Math.round(dailyBudget * .22) },
         ],
       };
     }),
@@ -124,69 +177,60 @@ export function parseItinerarySkeleton(input: TripInput, content: unknown) {
 }
 
 export function isRecoverableItineraryResponse(error: unknown) {
-  return error instanceof SyntaxError || error instanceof z.ZodError || error instanceof Error && /no readable|incomplete/i.test(error.message);
+  return error instanceof SyntaxError || error instanceof z.ZodError || (error instanceof Error && /no readable|incomplete/i.test(error.message));
 }
 
 export function fallbackItinerary(input: TripInput) {
-  const styles = input.styles.join(", ").toLowerCase();
-  return {
-    title: `${input.destination} in ${input.days} days`,
-    summary: `A paced ${input.days}-day ${input.destination} itinerary shaped around ${styles}, with flexible time for local discoveries and a clear daily spend guide.`,
-    days: Array.from({ length: input.days }, (_, index) => ({
-      day: index + 1,
-      theme: index === 0 ? `Arrive & find your rhythm` : index === input.days - 1 ? `A considered finale` : `${input.styles[index % input.styles.length]} focus`,
-      stops: [
-        { time: "09:00", title: `Discover ${input.destination}`, location: input.destination, description: `Start with a context-setting local route designed for a ${input.styles[index % input.styles.length].toLowerCase()} traveller.`, duration: "2 hours", estimatedCost: Math.round(input.budgetAmount / input.days / 5) },
-        { time: "13:00", title: "Local lunch pause", location: input.destination, description: "Leave time for a regional lunch and a comfortable reset before the afternoon.", duration: "90 minutes", estimatedCost: Math.round(input.budgetAmount / input.days / 8) },
-        { time: "16:30", title: "Signature afternoon", location: input.destination, description: "Choose a flexible activity that fits the day’s pace and your selected travel styles.", duration: "2–3 hours", estimatedCost: Math.round(input.budgetAmount / input.days / 4) },
-      ],
-    })),
-  };
+  return buildDestinationItinerary(input, { isAiGenerated: false });
 }
 
-async function generateItinerary(input: TripInput) {
+export async function generateItinerary(input: TripInput) {
+  const destination = getDestination(input.destination);
+  const aiReady = isAIConfigured();
+  console.log(`[TripWise DevLog] Selected destination: "${input.destination}" (${destination.name})`);
+  console.log(`[TripWise DevLog] AI Configured: ${aiReady}`);
+
+  const baseResult = buildDestinationItinerary(input, { isAiGenerated: aiReady });
+  const allStops = baseResult.days.flatMap(d => d.stops.map(s => s.title));
+  console.log(`[TripWise DevLog] Calling generator: buildDestinationItinerary (server/itineraryEngine.ts)`);
+  console.log(`[TripWise DevLog] Generated attractions & food places (${allStops.length} stops):`, allStops);
+
+  if (!aiReady) {
+    return { ...baseResult, generatedByAI: false as const };
+  }
+
   try {
     const model = await withDeadline(getItineraryModel(), 3000, "The itinerary model is unavailable.");
-    const responseFormat = {
-      type: "json_schema" as const,
-      json_schema: {
-        name: "tripwise_itinerary_skeleton",
-        strict: true,
-        schema: {
-          type: "object",
-          properties: {
-            title: { type: "string" }, summary: { type: "string" }, days: {
-              type: "array", items: { type: "object", properties: {
-                day: { type: "integer" }, theme: { type: "string" }, anchor: { type: "string" },
-              }, required: ["day", "theme", "anchor"], additionalProperties: false },
-            },
-          }, required: ["title", "summary", "days"], additionalProperties: false,
-        },
-      },
-    };
-    const tripBrief = `Create a ${input.days}-day itinerary for ${input.destination}, ${input.startDate} to ${input.endDate}; ${input.travelers} traveller(s); INR ${input.budgetAmount}; ${input.budgetTier}; preferences: ${input.styles.join(", ")}. Return exactly ${input.days} days. Each day needs only a concise theme and one specific landmark or neighbourhood anchor. Keep the summary under 55 words.`;
-    let lastError: unknown;
-    for (const attempt of [0, 1]) {
-      try {
-        const response = await withDeadline(invokeLLM({
-          model,
-          maxTokens: attempt === 0 ? 900 : 1100,
-          messages: [
-            { role: "system", content: attempt === 0 ? "You are TripWise, a practical India travel planner. Create feasible, unhurried plans. Do not invent reviews, opening hours, booking availability, exact live prices, or unsafe advice. Return only compact JSON matching the supplied schema." : "Return one complete, compact JSON itinerary skeleton only. Do not include markdown, commentary, or an incomplete object." },
-            { role: "user", content: tripBrief },
-          ],
-          response_format: responseFormat,
-        }), attempt === 0 ? 16000 : 10000);
-        return { ...parseItinerarySkeleton(input, response.choices[0]?.message?.content), generatedByAI: true as const };
-      } catch (error) {
-        lastError = error;
-        if (!isRecoverableItineraryResponse(error)) throw error;
-      }
+    const brief = `You are TripWise. Write an evocative summary (25-45 words) and daily themes for a ${input.days}-day trip to ${destination.name}.
+Styles: ${input.styles.join(", ")}.
+Key stops: ${allStops.slice(0, 8).join(", ")}.
+Return JSON only: { "summary": string, "themes": string[] } with exactly ${input.days} themes.`;
+
+    const aiRes = await withDeadline(
+      invokeLLM({
+        model,
+        maxTokens: 500,
+        messages: [{ role: "user", content: brief }],
+        response_format: { type: "json_object" },
+      }),
+      8000
+    );
+
+    const parsed = JSON.parse(itineraryResponseText(aiRes.choices[0]?.message?.content || "{}"));
+    if (parsed.summary && typeof parsed.summary === "string" && parsed.summary.length >= 20) {
+      baseResult.summary = parsed.summary.slice(0, 319);
     }
-    throw lastError;
-  } catch (error) {
-    console.error("[TripWise] Itinerary generation failed", error);
-    return { ...fallbackItinerary(input), generatedByAI: false as const };
+    if (Array.isArray(parsed.themes) && parsed.themes.length === baseResult.days.length) {
+      baseResult.days.forEach((day, idx) => {
+        if (typeof parsed.themes[idx] === "string" && parsed.themes[idx].length >= 3) {
+          day.theme = parsed.themes[idx].slice(0, 79);
+        }
+      });
+    }
+    return { ...baseResult, generatedByAI: true as const };
+  } catch (err) {
+    console.warn("[TripWise] AI theme enrichment failed or timed out; returning authoritative plan:", err);
+    return { ...baseResult, generatedByAI: false as const };
   }
 }
 
@@ -195,6 +239,101 @@ export const appRouter = router({
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
+    register: publicProcedure
+      .input(
+        z.object({
+          email: z.string().trim().email("Please provide a valid email address").max(320),
+          password: z.string().min(8, "Password must be at least 8 characters").max(100),
+          name: z.string().trim().max(100).optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const normalizedEmail = input.email.toLowerCase().trim();
+        const existing = await getUserByEmail(normalizedEmail);
+        if (existing) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "An account with this email address already exists.",
+          });
+        }
+
+        const passwordHash = await bcrypt.hash(input.password, 10);
+        const userId = await createUserWithPassword({
+          email: normalizedEmail,
+          passwordHash,
+          name: input.name,
+        });
+
+        const user = {
+          id: userId,
+          openId: `usr_${userId}`,
+          email: normalizedEmail,
+          name: input.name || null,
+        };
+
+        const sessionToken = await createSessionToken(user);
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+          ...cookieOptions,
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+        });
+
+        return {
+          success: true,
+          user: {
+            id: userId,
+            email: normalizedEmail,
+            name: input.name || null,
+          },
+        };
+      }),
+    login: publicProcedure
+      .input(
+        z.object({
+          email: z.string().trim().email("Please provide a valid email address").max(320),
+          password: z.string().min(1, "Password is required").max(100),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const normalizedEmail = input.email.toLowerCase().trim();
+        const user = await getUserByEmail(normalizedEmail);
+        if (!user || !user.passwordHash) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Invalid email or password.",
+          });
+        }
+
+        const isValid = await bcrypt.compare(input.password, user.passwordHash);
+        if (!isValid) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Invalid email or password.",
+          });
+        }
+
+        await updateLastSignedIn(user.id);
+
+        const sessionToken = await createSessionToken({
+          id: user.id,
+          openId: user.openId,
+          email: user.email,
+        });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+          ...cookieOptions,
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+        });
+
+        return {
+          success: true,
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          },
+        };
+      }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
@@ -211,15 +350,91 @@ export const appRouter = router({
       if (!trip) throw new TRPCError({ code: "NOT_FOUND", message: "This trip was not found." });
       return trip;
     }),
-    createTrip: protectedProcedure.input(tripInput.extend({ title: z.string().min(3).max(180), summary: z.string().min(20).max(700), itinerary: itinerarySchema.shape.days, budget: budgetBreakdownSchema })).mutation(async ({ ctx, input }) => {
-      const id = await createTripForUser({ ...input, userId: ctx.user.id, budgetBreakdown: input.budget, itinerary: input.itinerary });
-      return { id };
-    }),
-    deleteTrip: protectedProcedure.input(z.object({ id: z.number().int().positive() })).mutation(async ({ ctx, input }) => ({ success: await deleteTripForUser(ctx.user.id, input.id) })),
+    createTrip: protectedProcedure
+      .input(
+        tripInput.extend({
+          title: z.string().min(3).max(180),
+          summary: z.string().min(20).max(700),
+          itinerary: itinerarySchema.shape.days,
+          budget: budgetBreakdownSchema,
+          accommodation: accommodationSelectionSchema.nullish(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const id = await createTripForUser({
+          ...input,
+          userId: ctx.user.id,
+          budgetBreakdown: input.budget,
+          itinerary: input.itinerary,
+          accommodation: input.accommodation ?? null,
+        });
+        return { id };
+      }),
+    updateTrip: protectedProcedure
+      .input(
+        z.object({
+          id: z.number().int().positive(),
+          itinerary: itinerarySchema.shape.days,
+          title: z.string().min(3).max(180).optional(),
+          summary: z.string().min(10).max(1200).optional(),
+          budgetBreakdown: budgetBreakdownSchema.optional(),
+          accommodation: accommodationSelectionSchema.nullish(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const success = await updateTripForUser(ctx.user.id, input.id, {
+          itinerary: input.itinerary,
+          title: input.title,
+          summary: input.summary,
+          budgetBreakdown: input.budgetBreakdown,
+          accommodation: input.accommodation,
+        });
+
+        if (!success) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You do not have permission to modify this trip, or the trip does not exist.",
+          });
+        }
+
+        const freshTrip = await getTripForUser(ctx.user.id, input.id);
+        return {
+          success: true,
+          trip: freshTrip,
+        };
+      }),
+    deleteTrip: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const deleted = await deleteTripForUser(ctx.user.id, input.id);
+        if (!deleted) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Trip not found or you do not have permission to delete it.",
+          });
+        }
+        return { success: true };
+      }),
   }),
   subscription: router({
-    current: protectedProcedure.query(async ({ ctx }) => (await getSubscriptionForUser(ctx.user.id)) ?? { plan: "free", status: "active", provider: "demo", renewalDate: null }),
-    selectDemoPlan: protectedProcedure.input(z.object({ plan: z.enum(["free", "pro"]) })).mutation(({ ctx, input }) => setSubscriptionForUser(ctx.user.id, input.plan)),
+    current: protectedProcedure.query(async ({ ctx }) => {
+      const record = await getSubscriptionForUser(ctx.user.id);
+      return {
+        plan: "free" as const,
+        status: "active" as const,
+        provider: "community",
+        renewalDate: null,
+        isFullAccess: true,
+        isUnlimited: true,
+        ...(record ? { plan: record.plan, status: record.status } : {}),
+      };
+    }),
+    selectDemoPlan: protectedProcedure
+      .input(z.object({ plan: z.enum(["free", "pro"]).optional() }))
+      .mutation(async () => ({
+        success: true,
+        message: "TripWise AI is completely free for all users.",
+      })),
   }),
   profile: router({
     current: protectedProcedure.query(async ({ ctx }) => (await getTravelProfileForUser(ctx.user.id)) ?? { preferences: ["Slow mornings", "Local food", "Meaningful culture"] }),

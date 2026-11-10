@@ -1,9 +1,8 @@
 import { Link } from "wouter";
 import { ArrowRight, Compass, MapPinned, ShieldCheck, Sparkles, Wand2 } from "lucide-react";
 import { TripNav } from "@/components/TripNav";
-import { ThreeBackground } from "@/components/ThreeBackground";
 import { HomeBeachCinematic } from "@/components/HomeBeachCinematic";
-import { destinations } from "@/data/destinations";
+import { destinations, getCategoryFallbackImage } from "@/data/destinations";
 import { Button } from "@/components/ui/button";
 
 const signals = [
@@ -19,7 +18,6 @@ export default function Home() {
     <main>
       <section className="hero-section section-grid">
         <div className="home-beach-scene" aria-hidden="true"><span /></div>
-        <ThreeBackground scene="globe" />
         <div className="container hero-content">
           <div className="hero-copy">
             <p className="eyebrow"><Sparkles size={14} /> A more considered way to move</p>
@@ -46,11 +44,11 @@ export default function Home() {
 
       <section className="section destination-section">
         <div className="container"><div className="section-heading inline-heading"><div><p className="eyebrow">Starting points</p><h2>Places that change your <em>perspective.</em></h2></div><Link href="/explore" className="text-link">View all destinations <ArrowRight size={16} /></Link></div>
-          <div className="destination-feature-grid">{destinations.slice(0, 3).map((destination, index) => <Link href={`/explore?destination=${destination.id}`} className={`destination-feature destination-${index}`} key={destination.id}><img src={destination.image} alt="" /><div className="feature-overlay" /><div className="destination-feature-copy"><span>{destination.region} India · {destination.category}</span><h3>{destination.name}</h3><p>{destination.description}</p><i><ArrowRight size={18} /></i></div></Link>)}</div>
+          <div className="destination-feature-grid">{destinations.slice(0, 3).map((destination, index) => <Link href={`/explore?destination=${destination.id}`} className={`destination-feature destination-${index}`} key={destination.id}><img src={destination.image} alt={destination.name} loading="lazy" onError={e => { const fb = getCategoryFallbackImage(destination.category); if (e.currentTarget.src !== fb) e.currentTarget.src = fb; }} /><div className="feature-overlay" /><div className="destination-feature-copy"><span>{destination.region} India · {destination.category}</span><h3>{destination.name}</h3><p>{destination.description}</p><i><ArrowRight size={18} /></i></div></Link>)}</div>
         </div>
       </section>
 
-      <section className="section final-cta"><ThreeBackground scene="orbit" /><div className="container final-cta-content"><p className="eyebrow">Your next chapter</p><h2>Build a trip with<br /><em>more signal.</em></h2><p>Bring your dates, your people and the way you want to feel. We will help shape the rest.</p><Link href="/planner"><Button className="button-teal button-lg">Start planning <ArrowRight size={17} /></Button></Link></div></section>
+      <section className="section final-cta"><div className="container final-cta-content"><p className="eyebrow">Your next chapter</p><h2>Build a trip with<br /><em>more signal.</em></h2><p>Bring your dates, your people and the way you want to feel. We will help shape the rest.</p><Link href="/planner"><Button className="button-teal button-lg">Start planning <ArrowRight size={17} /></Button></Link></div></section>
     </main>
     <footer className="site-footer"><div className="container"><div className="brand"><span className="brand-mark"><Compass size={16} /></span>Trip<span>Wise</span></div><p>AI-guided travel, designed with care.</p><span>© 2026 TripWise</span></div></footer>
   </div>;

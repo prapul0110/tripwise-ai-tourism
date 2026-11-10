@@ -4,20 +4,20 @@ import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
 import { Button } from "@/components/ui/button";
-import { SoundToggle } from "@/components/SoundToggle";
+import { useTrip } from "@/contexts/TripContext";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/explore", label: "Explore" },
   { href: "/planner", label: "AI Planner" },
   { href: "/trips", label: "My Trips" },
-  { href: "/pricing", label: "Pricing" },
 ];
 
 export function TripNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [location] = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
+  const { setDraft } = useTrip();
   const isActive = (href: string) => href === location || (href !== "/" && location.startsWith(href));
 
   return (
@@ -27,10 +27,9 @@ export function TripNav() {
           <span className="brand-mark"><Plane size={16} /></span><span>Trip<span>Wise</span></span>
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {links.map(link => <Link key={link.href} href={link.href} className={isActive(link.href) ? "active" : ""}>{link.label}</Link>)}
+          {links.map(link => <Link key={link.href} href={link.href} className={isActive(link.href) ? "active" : ""} onClick={() => { if (link.href === "/planner") setDraft(null); }}>{link.label}</Link>)}
         </nav>
         <div className="nav-actions">
-          <SoundToggle />
           {isAuthenticated ? (
             <>
               <Link href="/profile" className="profile-chip"><span>{user?.name?.slice(0, 1) || "T"}</span>{user?.name?.split(" ")[0] || "Profile"}</Link>
@@ -46,8 +45,8 @@ export function TripNav() {
         </div>
       </div>
       {mobileOpen && <nav className="mobile-nav" aria-label="Mobile navigation">
-        {links.map(link => <Link key={link.href} href={link.href} className={isActive(link.href) ? "active" : ""} onClick={() => setMobileOpen(false)}><Compass size={15} />{link.label}</Link>)}
-        {isAuthenticated ? <button className="mobile-sign-out" onClick={() => { setMobileOpen(false); void logout(); }}>Sign out</button> : <button className="mobile-sign-out" onClick={startLogin}>Sign in with Manus</button>}
+        {links.map(link => <Link key={link.href} href={link.href} className={isActive(link.href) ? "active" : ""} onClick={() => { setMobileOpen(false); if (link.href === "/planner") setDraft(null); }}><Compass size={15} />{link.label}</Link>)}
+        {isAuthenticated ? <button className="mobile-sign-out" onClick={() => { setMobileOpen(false); void logout(); }}>Sign out</button> : <button className="mobile-sign-out" onClick={startLogin}>Sign in</button>}
       </nav>}
     </header>
   );

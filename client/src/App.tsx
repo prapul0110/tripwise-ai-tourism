@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Router as WouterRouter } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { InteractionSoundManager } from "./components/InteractionSoundManager";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -15,24 +15,28 @@ import Profile from "./pages/Profile";
 import DestinationDetail from "./pages/DestinationDetail";
 import { TripProvider } from "./contexts/TripContext";
 import { NatureBackdrop } from "./components/NatureBackdrop";
+import { AuthDialog } from "./components/AuthDialog";
+import { useGuardedLocation } from "./lib/navigationGuard";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/planner"} component={Planner} />
-      <Route path={"/explore/:id"}>{params => <DestinationDetail destinationId={params.id} />}</Route>
-      <Route path={"/explore"} component={Explore} />
-      <Route path={"/trip/current"}><TripDetail /></Route>
-      <Route path={"/trip/:id"}>{params => <TripDetail tripId={params.id} />}</Route>
-      <Route path={"/trips"} component={Trips} />
-      <Route path={"/pricing"} component={Pricing} />
-      <Route path={"/profile"} component={Profile} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+    <WouterRouter hook={useGuardedLocation}>
+      <Switch>
+        <Route path={"/"} component={Home} />
+        <Route path={"/planner"} component={Planner} />
+        <Route path={"/explore/:id"}>{params => <DestinationDetail destinationId={params.id} />}</Route>
+        <Route path={"/explore"} component={Explore} />
+        <Route path={"/trip/current"}><TripDetail /></Route>
+        <Route path={"/trip/:id"}>{params => <TripDetail tripId={params.id} />}</Route>
+        <Route path={"/trips"} component={Trips} />
+        <Route path={"/pricing"} component={Pricing} />
+        <Route path={"/profile"} component={Profile} />
+        <Route path={"/404"} component={NotFound} />
+        {/* Final fallback route */}
+        <Route component={NotFound} />
+      </Switch>
+    </WouterRouter>
   );
 }
 
@@ -51,6 +55,7 @@ function App() {
         <TooltipProvider>
           <InteractionSoundManager />
           <Toaster />
+          <AuthDialog />
           <NatureBackdrop />
           <div className="application-layer"><TripProvider><Router /></TripProvider></div>
         </TooltipProvider>

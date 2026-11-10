@@ -212,14 +212,60 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
+export type AIProvider = {
+  name: "forge" | "openai" | "gemini";
+  apiKey: string;
+  apiUrl: string;
+  model: string;
+};
+
+export function getActiveAIProvider(): AIProvider | null {
+  if (ENV.forgeApiKey && ENV.forgeApiKey.trim().length > 0) {
+    return {
+      name: "forge",
+      apiKey: ENV.forgeApiKey.trim(),
+      apiUrl: ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
+        ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
+        : "https://forge.manus.im/v1/chat/completions",
+      model: "gemini-2.5-flash",
+    };
+  }
+  if (ENV.openaiApiKey && ENV.openaiApiKey.trim().length > 0) {
+    const base = ENV.openaiBaseUrl && ENV.openaiBaseUrl.trim().length > 0
+      ? ENV.openaiBaseUrl.replace(/\/$/, "")
+      : "https://api.openai.com/v1";
+    return {
+      name: "openai",
+      apiKey: ENV.openaiApiKey.trim(),
+      apiUrl: `${base}/chat/completions`,
+      model: "gpt-4o-mini",
+    };
+  }
+  if (ENV.geminiApiKey && ENV.geminiApiKey.trim().length > 0) {
+    return {
+      name: "gemini",
+      apiKey: ENV.geminiApiKey.trim(),
+      apiUrl: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+      model: "gemini-1.5-flash",
+    };
+  }
+  return null;
+}
+
+export function isAIConfigured(): boolean {
+  return getActiveAIProvider() !== null;
+}
+
+const resolveApiUrl = () => {
+  const provider = getActiveAIProvider();
+  if (provider) return provider.apiUrl;
+  return "https://forge.manus.im/v1/chat/completions";
+};
 
 const assertApiKey = () => {
-  if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
+  const provider = getActiveAIProvider();
+  if (!provider) {
+    throw new Error("No AI API key is configured. Please configure OPENAI_API_KEY or GEMINI_API_KEY in server environment.");
   }
 };
 
@@ -341,6 +387,7 @@ const fetchWithBackoff = async (
 
 export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   assertApiKey();
+  const provider = getActiveAIProvider();
 
   const {
     messages,
@@ -362,9 +409,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     messages: messages.map(normalizeMessage),
   };
 
-  if (model) {
-    payload.model = model;
-  }
+  payload.model = model || provider?.model || "gemini-2.5-flash";
 
   if (tools && tools.length > 0) {
     payload.tools = tools;
@@ -405,7 +450,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      authorization: `Bearer ${provider?.apiKey || ""}`,
     },
     body: JSON.stringify(payload),
   });
@@ -434,21 +479,34 @@ export type ModelsResponse = {
 
 export async function listLLMModels(): Promise<ModelsResponse> {
   assertApiKey();
-
-  const url = ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/models`
-    : "https://forge.manus.im/v1/models";
-
-  const response = await fetchWithBackoff(url, {
-    headers: { authorization: `Bearer ${ENV.forgeApiKey}` },
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `List LLM models failed: ${response.status} ${response.statusText} – ${errorText}`
-    );
+  const provider = getActiveAIProvider();
+  if (!provider) {
+    throw new Error("No AI API key is configured.");
   }
 
-  return (await response.json()) as ModelsResponse;
+  if (provider.name === "forge") {
+    const url = ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
+      ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/models`
+      : "https://forge.manus.im/v1/models";
+
+    const response = await fetchWithBackoff(url, {
+      headers: { authorization: `Bearer ${provider.apiKey}` },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `List LLM models failed: ${response.status} ${response.statusText} – ${errorText}`
+      );
+    }
+
+    return (await response.json()) as ModelsResponse;
+  }
+
+  return {
+    object: "list",
+    data: [
+      { id: provider.model, object: "model", created: Date.now(), owned_by: provider.name },
+    ],
+  };
 }
