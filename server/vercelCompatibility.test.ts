@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { EventEmitter } from "events";
 import type { Express } from "express";
 import { createTripWiseApp, extractValidatedApiPath, combinePathAndQuery } from "./_core/app";
-import vercelCatchAllHandler from "../api/[...path]";
+import serverlessEntryHandler from "../serverless/entry";
 import vercelIndexHandler from "../api/index";
 import { createSessionToken } from "./_core/authService";
 import { ENV } from "./_core/env";
@@ -91,10 +91,10 @@ describe("Vercel Deployment Compatibility", () => {
     expect((app as unknown as { listening?: boolean }).listening).toBeFalsy();
   });
 
-  it("exports a default Express app from api/[...path].ts without opening a TCP listener", () => {
-    expect(vercelCatchAllHandler).toBeDefined();
-    expect(typeof vercelCatchAllHandler.use).toBe("function");
-    expect((vercelCatchAllHandler as unknown as { listening?: boolean }).listening).toBeFalsy();
+  it("exports a default Express app from serverless/entry.ts without opening a TCP listener", () => {
+    expect(serverlessEntryHandler).toBeDefined();
+    expect(typeof serverlessEntryHandler.use).toBe("function");
+    expect((serverlessEntryHandler as unknown as { listening?: boolean }).listening).toBeFalsy();
   });
 
   it("exports a default Express app from api/index.ts without opening a TCP listener", () => {

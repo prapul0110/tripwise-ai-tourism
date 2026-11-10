@@ -1,4 +1,3 @@
-import { createTripWiseApp } from "../server/_core/app";
+import app from "../dist/serverless/index.js";
 
-const app = createTripWiseApp();
 export default app;
